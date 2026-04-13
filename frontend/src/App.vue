@@ -5,6 +5,7 @@
       <router-link to="/patients" style="color:#fff;text-decoration:none">患者管理</router-link>
       <router-link to="/visits" style="color:#fff;text-decoration:none">就诊记录</router-link>
       <router-link to="/drugs" style="color:#fff;text-decoration:none">药品库存</router-link>
+      <router-link to="/prescriptions" style="color:#fff;text-decoration:none">处方管理</router-link>
       <button @click="logout" style="background:transparent;border:1px solid #fff;color:#fff;padding:4px 12px;cursor:pointer;border-radius:4px">退出</button>
     </nav>
     <router-view style="padding:24px" />
