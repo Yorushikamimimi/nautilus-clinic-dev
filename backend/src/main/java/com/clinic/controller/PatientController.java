@@ -2,7 +2,7 @@ package com.clinic.controller;
 
 import com.clinic.dto.ApiResponse;
 import com.clinic.entity.Patient;
-import com.clinic.repository.PatientRepository;
+import com.clinic.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,42 +13,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PatientController {
 
-    private final PatientRepository patientRepository;
+    private final PatientService patientService;
 
     @GetMapping
     public ApiResponse<List<Patient>> list(@RequestParam(required = false) String name) {
-        List<Patient> result = (name != null && !name.isBlank())
-                ? patientRepository.findByNameContainingIgnoreCase(name)
-                : patientRepository.findAll();
-        return ApiResponse.ok(result);
+        return ApiResponse.ok(patientService.search(name));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<Patient> get(@PathVariable Long id) {
-        return patientRepository.findById(id)
+        return patientService.findById(id)
                 .map(ApiResponse::ok)
                 .orElse(ApiResponse.fail("患者不存在"));
     }
 
     @PostMapping
     public ApiResponse<Patient> create(@RequestBody Patient patient) {
-        return ApiResponse.ok(patientRepository.save(patient));
+        return ApiResponse.ok(patientService.create(patient));
     }
 
     @PutMapping("/{id}")
     public ApiResponse<Patient> update(@PathVariable Long id, @RequestBody Patient body) {
-        return patientRepository.findById(id).map(p -> {
-            p.setName(body.getName());
-            p.setGender(body.getGender());
-            p.setBirthDate(body.getBirthDate());
-            p.setPhone(body.getPhone());
-            return ApiResponse.ok(patientRepository.save(p));
-        }).orElse(ApiResponse.fail("患者不存在"));
+        return patientService.update(id, body)
+                .map(ApiResponse::ok)
+                .orElse(ApiResponse.fail("患者不存在"));
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable Long id) {
-        patientRepository.deleteById(id);
+        patientService.delete(id);
         return ApiResponse.ok(null);
     }
 }
