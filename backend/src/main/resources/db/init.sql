@@ -37,6 +37,11 @@ CREATE TABLE IF NOT EXISTS drugs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_visits_patient ON visits(patient_id);
+CREATE INDEX IF NOT EXISTS idx_visits_status ON visits(status);
+CREATE INDEX IF NOT EXISTS idx_prescriptions_visit ON prescriptions(visit_id);
+
 -- Prescriptions table
 CREATE TABLE IF NOT EXISTS prescriptions (
     id BIGSERIAL PRIMARY KEY,
