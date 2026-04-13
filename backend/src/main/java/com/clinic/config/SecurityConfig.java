@@ -4,6 +4,7 @@ import com.clinic.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,6 +35,14 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                // Only ADMIN can delete resources
+                .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+                // Only ADMIN can manage drugs (create/update)
+                .requestMatchers(HttpMethod.POST, "/api/drugs/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/drugs/**").hasRole("ADMIN")
+                // DOCTOR and ADMIN can create prescriptions
+                .requestMatchers(HttpMethod.POST, "/api/prescriptions/**").hasAnyRole("ADMIN", "DOCTOR")
+                // All authenticated users can read
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
