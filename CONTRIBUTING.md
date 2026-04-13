@@ -1,4 +1,4 @@
 # Contributing Guide
 
 ## Contact
-Email: admin@clinic.com
+Email: dev@clinic.com
